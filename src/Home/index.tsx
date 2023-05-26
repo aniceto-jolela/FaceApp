@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { ImageSourcePropType, View,TouchableOpacity,Text } from "react-native";
 import { styles } from "../../style/styles";
 import { Camera, CameraType, FaceDetectionResult } from "expo-camera";
 import * as FaceDetector from "expo-face-detector";
@@ -8,10 +8,17 @@ import Animated, {
 } from "react-native-reanimated";
 import { useEffect, useState } from "react";
 
+
+import smilingImg from "../../assets/emojis/smiling.png";
+import winkingImg from "../../assets/emojis/winking.png";
+import neutralImg from "../../assets/emojis/neutral.png";
+import Dimensions from "./dimension";
+
 export default function Home() {
+  const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [faceDetected, setFaceDetected] = useState(false);
-
+  const [emoji,setEmoji] = useState<ImageSourcePropType>(neutralImg)
 
 
   const faceValues = useSharedValue({
@@ -33,6 +40,14 @@ export default function Home() {
         y: origin.y,
       };
       setFaceDetected(true);
+      if(face.smilingProbability>0.5){
+        setEmoji(smilingImg)
+      }else if(face.leftEyeOpenProbability < 0.5 && face.rightEyeOpenProbability > 0.5){
+        setEmoji(winkingImg)
+      }
+      else{
+        setEmoji(neutralImg)
+      }
     } else {
       setFaceDetected(false);
     }
@@ -47,9 +62,12 @@ export default function Home() {
       { translateX: faceValues.value.x },
       { translateY: faceValues.value.y },
     ],
-    borderColor: "blue",
-    borderWidth: 10,
+    
   }));
+
+  function toggleCameraType() {
+    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+  }
 
   useEffect(() => {
     requestPermission();
@@ -61,10 +79,12 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      {faceDetected && <Animated.View style={animatedStyle} />}
+      {faceDetected && <Animated.Image style={animatedStyle} source={emoji} />}
+     
+
       <Camera
         style={styles.camera}
-        type={CameraType.front}
+        type={type}
         onFacesDetected={handleFacesDetected}
         faceDetectorSettings={{
           mode: FaceDetector.FaceDetectorMode.fast,
@@ -73,7 +93,15 @@ export default function Home() {
           minDetectionInterval: 100,
           tracking: true,
         }}
-      />
+      >
+      <Dimensions/>
+
+<View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
+            <Text style={styles.text}>Flip Camera</Text>
+          </TouchableOpacity>
+        </View>
+      </Camera>
     </View>
   );
 }
