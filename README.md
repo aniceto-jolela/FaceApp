@@ -5,6 +5,8 @@ Detecting the person's face.
 
   </div>
 
+  [🤖 Android app:](https://expo.dev/artifacts/eas/pQ1S2uXi92yqSYCgwPE5K2.apk)
+
 # Dependency
 ```ts
 - npx expo install expo-camera
@@ -14,4 +16,7 @@ Detecting the person's face.
 ```
 
 
-<p align='center'> 🚧 </p>
+##
+#
+###### Author : Aniceto Jolela 🥰
+ My  | [Linkedin](https://www.linkedin.com/in/aniceto-jolela-076547184/))
