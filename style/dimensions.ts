@@ -7,13 +7,6 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "500",
   },
-  buttonContainerDimension: {
-    position: "absolute",
-    marginTop: -65,
-    zIndex: 1,
-    flexDirection: "row",
-    marginLeft: 20,
-  },
   buttonDimension: {
     marginLeft: 25,
     padding: 10,

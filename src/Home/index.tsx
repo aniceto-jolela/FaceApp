@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import { styles } from "../../style/styles";
+import { styles } from "../../style/dimensions";
 import { Camera, CameraType, FaceDetectionResult } from "expo-camera";
 import * as FaceDetector from "expo-face-detector";
 import Animated, {
@@ -16,13 +16,21 @@ import { useEffect, useState } from "react";
 import smilingImg from "../../assets/emojis/smiling.png";
 import winkingImg from "../../assets/emojis/winking.png";
 import neutralImg from "../../assets/emojis/neutral.png";
-import Dimensions from "./dimension";
+
+type PropsDimension = {
+  width: number;
+  height: number;
+};
 
 export default function Home() {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [faceDetected, setFaceDetected] = useState(false);
   const [emoji, setEmoji] = useState<ImageSourcePropType>(neutralImg);
+  const [dimension, setDimension] = useState<PropsDimension>({
+    width: 500,
+    height: 500,
+  });
 
   const faceValues = useSharedValue({
     width: 0,
@@ -46,8 +54,8 @@ export default function Home() {
       if (face.smilingProbability > 0.5) {
         setEmoji(smilingImg);
       } else if (
-        face.leftEyeOpenProbability < 0.5 &&
-        face.rightEyeOpenProbability > 0.5
+        face.leftEyeOpenProbability > 0.5 &&
+        face.rightEyeOpenProbability < 0.5
       ) {
         setEmoji(winkingImg);
       } else {
@@ -84,12 +92,52 @@ export default function Home() {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        marginTop: dimension.width === 700 ? 0 : 130,
+        height: dimension.height,
+        width: dimension.width,
+      }}
+    >
       {faceDetected && <Animated.Image style={animatedStyle} source={emoji} />}
 
-      <Dimensions />
+      <View
+        style={{
+          position: "absolute",
+          marginTop: dimension.width === 700 ? 65 : -65,
+          zIndex: 1,
+          flexDirection: "row",
+          marginLeft: 20,
+        }}
+      >
+        <TouchableOpacity
+          style={styles.buttonDimension}
+          onPress={() => setDimension({ width: 500, height: 640 })}
+        >
+          <Text style={styles.text}>3:4</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonDimension}
+          onPress={() => setDimension({ width: 500, height: 715 })}
+        >
+          <Text style={styles.text}>9:16</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonDimension}
+          onPress={() => setDimension({ width: 500, height: 500 })}
+        >
+          <Text style={styles.text}>1:1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonDimension}
+          onPress={() => setDimension({ width: 700, height: 880 })}
+        >
+          <Text style={styles.text}>Full</Text>
+        </TouchableOpacity>
+      </View>
+
       <Camera
-        style={styles.camera}
+        style={{ flex: 1 }}
         type={type}
         onFacesDetected={handleFacesDetected}
         faceDetectorSettings={{
@@ -99,10 +147,24 @@ export default function Home() {
           minDetectionInterval: 100,
           tracking: true,
         }}
-      ></Camera>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-          <Text style={styles.text}>Flip Camera</Text>
+      />
+      <View
+        style={{
+          marginTop: dimension.width === 700 ? 700 : 580,
+          flexDirection: "row",
+          position: "absolute",
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            marginLeft: 170,
+            borderRadius: 50,
+            borderRightWidth: 5,
+            padding: 25,
+          }}
+          onPress={toggleCameraType}
+        >
+          <Text style={{ color: "orange", fontSize: 20 }}>Flip</Text>
         </TouchableOpacity>
       </View>
     </View>
