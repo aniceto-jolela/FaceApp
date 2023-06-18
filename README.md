@@ -17,6 +17,7 @@ Detecting the person's face.
 
 
 ##
+![Ilustração do App](assets/XRecorder_02062023_114337.gif)
 #
 ###### Author : Aniceto Jolela 🥰
  My  | [Linkedin](https://www.linkedin.com/in/aniceto-jolela-076547184/))
